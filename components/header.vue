@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-gray-100 text-gray-800 p-2 sticky top-0 z-50">
+  <header  class="bg-white/30 text-gray-800 p-2 sticky top-0 z-50 backdrop-blur-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16 relative">
         <!-- Logo -->
@@ -8,7 +8,7 @@
           class="text-2xl font-bold text-gray-800 transition-colors"
         >
           <img
-            src="/images/kh1.png"
+            src="/static/images/kh1.png"
             class="rounded-full w-12 h-12"
             alt=""
           />

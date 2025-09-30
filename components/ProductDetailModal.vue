@@ -29,16 +29,21 @@
           <div class="flex flex-col justify-start gap-1">
             <div class="text-lg text-gray-800 mb-1">{{ product.name }}</div>
             <div class="text-lg text-gray-800 mb-3">${{ product.price }}</div>
+            <div class="text-gray-600 mb-4">{{ product.description }}</div>
           </div>
-          <div class="flex flex-row self-end justify-end">
+         
+        </div>
+         <div class="flex flex-row self-end justify-end">
             <button
               @click="$emit('add-to-cart', product)"
-              class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800"
+              class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800 flex items-center justify-center gap-2 w-36"
             >
-              <font-awesome-icon :icon="['fas', 'shopping-cart']" />Add to Cart
+              <span class="flex items-center justify-center gap-2 w-full">
+                <font-awesome-icon :icon="['fas', 'shopping-cart']" />
+                Add to Cart
+              </span>
             </button>
           </div>
-        </div>
       </div>
     </div>
   </div>

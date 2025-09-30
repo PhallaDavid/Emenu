@@ -4,14 +4,23 @@
     <h1 class="text-2xl font-bold mb-6 text-gray-800">{{ $t("menu") }}</h1>
 
     <!-- Search Bar -->
-    <div class="mb-6">
+    <div class="mb-6 gap-4">
       <input
         v-model="searchQuery"
         type="text"
-        :placeholder="$t('search')"
+        :placeholder="$t('search...')"
         class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         :aria-label="$t('search')"
       />
+      <!-- <button
+        class="px-4 py-2 bg-gray-100 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800"
+      >
+        <span class="text-gray-800">Search</span>
+        <font-awesome-icon
+          :icon="['fas', 'magnifying-glass']"
+          class="text-gray-800"
+        />
+      </button> -->
     </div>
 
     <!-- Category Tabs -->
@@ -19,10 +28,10 @@
       <button
         @click="selectCategory('all')"
         :class="[
-          'bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
+          'px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
           selectedCategory === 'all'
             ? 'bg-gray-800 text-white shadow'
-            : 'bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-gray-800',
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
         ]"
         role="tab"
         :aria-selected="selectedCategory === 'all'"
@@ -34,10 +43,10 @@
         :key="category.id"
         @click="selectCategory(category.id)"
         :class="[
-          'bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
+          'px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
           selectedCategory === category.id
             ? 'bg-gray-800 text-white shadow'
-            : 'bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-gray-800',
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
         ]"
         role="tab"
         :aria-selected="selectedCategory === category.id"
@@ -45,7 +54,7 @@
         {{ category.name }}
       </button>
     </div>
-    <!-- <span class="" >{{ categories.name }}</span> -->
+
     <!-- Loading -->
     <div
       v-if="loading"
@@ -57,12 +66,12 @@
     <!-- Menu Items -->
     <div
       v-else-if="filteredItems.length > 0"
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4"
     >
       <div
         v-for="item in filteredItems"
         :key="item.id"
-        class="border cursor-pointer rounded-lg gap-1 p-1 shadow transform flex flex-col justify-between relative"
+        class="border cursor-pointer gap-1 rounded-xl shadow transform flex flex-col justify-between relative"
         tabindex="0"
         @keydown.enter="addToCart(item)"
         @click="showDetails(item)"
@@ -75,24 +84,42 @@
             v-if="item.image_url"
             :src="item.image_url"
             :alt="item.name"
-            class="h-40 w-full object-cover rounded mb-3"
+            class="h-40 w-full object-cover rounded-xl mb-3"
             loading="lazy"
           />
 
-          <!-- Floating Add-to-Cart Icon -->
+          <!-- Floating Add-to-Cart -->
           <button
-            @click.stop="addToCart(item)"
-            class="absolute top-2 right-2 bg-gray-50 text-gray-800 p-2 rounded-full hover:bg-opacity-100 transition"
+            @click.stop="handleAddToCart(item)"
+            class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center rounded-full bg-white/40 backdrop-blur-sm ring-1 ring-white/30 text-gray-800 p-2 hover:bg-white/60 transition"
             :aria-label="`Add ${item.name} to cart`"
           >
-            <font-awesome-icon :icon="['fas', 'shopping-cart']" />
+            <div class="flex items-center justify-center w-full h-full">
+              <span v-if="loadingItems.includes(item.id)">
+                <Spin class="w-4 h-4" />
+              </span>
+              <span v-else>
+                <font-awesome-icon
+                  :icon="['fas', 'shopping-cart']"
+                  class="text-sm text-gray-100"
+                />
+              </span>
+            </div>
           </button>
         </div>
 
         <!-- Product info -->
         <div>
-          <div class="text-lg text-gray-800 mb-1">{{ item.name }}</div>
-          <div class="text-lg text-gray-800 mb-3">${{ item.price }}</div>
+          <div
+            class="flex flex-row justify-between p-2 lg:flex-row md:flex-col sm:flex-col"
+          >
+            <div class="lg:text-lg text-gray-800 mb-1 sm:text-xs md:text-xs">
+              {{ item.name }}
+            </div>
+            <div class="lg:text-lg text-gray-800 mb-1 sm:text-xs md:text-xs">
+              ${{ item.price }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -118,6 +145,8 @@
       @close="showProductModal = false"
       @add-to-cart="addToCart"
     />
+    <!-- Table Modal -->
+    <TableSelectModal :show="showTableModal" @confirm="handleTableConfirm" />
   </div>
 </template>
 
@@ -126,6 +155,8 @@ import { ref, computed, onMounted } from "vue";
 import LoadingSpinner from "~/components/laoding.vue";
 import CartModal from "~/components/CartModal.vue";
 import ProductDetailModal from "~/components/ProductDetailModal.vue";
+import Spin from "~/components/spin.vue";
+import TableSelectModal from "~/components/TableSelectModal.vue";
 
 const categories = useState("categories", () => []);
 const allProducts = useState("allProducts", () => []);
@@ -133,6 +164,11 @@ const items = ref([]);
 const selectedCategory = ref(null);
 const loading = ref(false);
 const searchQuery = ref("");
+const showTableModal = ref(true);
+const tableNumber = ref("");
+
+// reactive loading states for cart buttons
+const loadingItems = ref([]);
 
 // Reactive modal states
 const selectedProduct = ref(null);
@@ -174,6 +210,11 @@ function selectCategory(categoryId) {
     );
   }
 }
+function handleTableConfirm(number) {
+  tableNumber.value = number;
+  showTableModal.value = false;
+  console.log("Selected table:", tableNumber.value);
+}
 
 // Add to cart
 function addToCart(item) {
@@ -188,13 +229,28 @@ function addToCart(item) {
   }
 }
 
+// Handle add to cart with spinner
+async function handleAddToCart(item) {
+  if (!loadingItems.value.includes(item.id)) {
+    loadingItems.value.push(item.id);
+  }
+
+  try {
+    // simulate async delay
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    addToCart(item);
+  } finally {
+    loadingItems.value = loadingItems.value.filter((id) => id !== item.id);
+  }
+}
+
 // Show product detail modal
 function showDetails(item) {
   selectedProduct.value = item;
   showProductModal.value = true;
 }
 
-// Remove item from cart (whole item delete)
+// Remove item from cart
 function removeItem(index) {
   cart.value.splice(index, 1);
   if (process.client) {
@@ -202,7 +258,7 @@ function removeItem(index) {
   }
 }
 
-// Decrease quantity or remove if 1
+// Decrease quantity
 function decreaseQuantity(index) {
   if (cart.value[index].quantity > 1) {
     cart.value[index].quantity--;
@@ -221,6 +277,7 @@ function increaseQuantity(index) {
     localStorage.setItem("cart", JSON.stringify(cart.value));
   }
 }
+
 async function handleCheckoutConfirm() {
   try {
     const totalPrice = cart.value
@@ -233,7 +290,7 @@ async function handleCheckoutConfirm() {
     }));
 
     const payload = {
-      table_number: "1",
+      table_number: tableNumber.value,
       items: orderItems,
       total_price: parseFloat(totalPrice),
     };
@@ -251,17 +308,18 @@ async function handleCheckoutConfirm() {
     alert("Failed to place order. Please try again.");
   }
 }
+
 onMounted(async () => {
   if (process.client) {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
-      cart.value = JSON.parse(savedCart);
-      cart.value = cart.value.map((item) => ({
+      cart.value = JSON.parse(savedCart).map((item) => ({
         ...item,
         quantity: item.quantity || 1,
       }));
     }
   }
+
   loading.value = true;
   try {
     await Promise.all([
@@ -273,6 +331,7 @@ onMounted(async () => {
           })()
         : Promise.resolve(),
     ]);
+
     if (categories.value.length > 0) {
       selectedCategory.value = "all";
       selectCategory("all");

@@ -38,9 +38,7 @@
             />
             <div class="flex-1">
               <div class="text-lg text-gray-800 mb-1">{{ item.name }}</div>
-              <div class="text-green-600 font-semibold mb-2">
-                ${{ (item.price * item.quantity).toFixed(2) }}
-              </div>
+              <div class="text-lg text-gray-800 mb-3">${{ item.price }}</div>
             </div>
 
             <!-- Quantity Controls -->
@@ -170,7 +168,11 @@ export default {
     paymentMethods() {
       return [
         { label: this.$t("Cash"), value: "cash", icon: ["fas", "money-bill"] },
-        { label: this.$t("Delivery"), value: "delivery", icon: ["fas", "truck"] },
+        {
+          label: this.$t("Delivery"),
+          value: "delivery",
+          icon: ["fas", "truck"],
+        },
       ];
     },
   },
