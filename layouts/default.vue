@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="antialiased bg-white dark:bg-[#020420] dark:text-white font-sans grid min-h-screen overflow-hidden place-content-center text-[#020420] tracking-wide">
     <!-- Header -->
     <Header />
 

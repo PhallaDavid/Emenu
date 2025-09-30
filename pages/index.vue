@@ -9,7 +9,7 @@
         v-model="searchQuery"
         type="text"
         :placeholder="$t('search')"
-        class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
+        class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         :aria-label="$t('search')"
       />
     </div>
@@ -45,7 +45,7 @@
         {{ category.name }}
       </button>
     </div>
-
+    <!-- <span class="" >{{ categories.name }}</span> -->
     <!-- Loading -->
     <div
       v-if="loading"
@@ -57,41 +57,43 @@
     <!-- Menu Items -->
     <div
       v-else-if="filteredItems.length > 0"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4"
     >
       <div
         v-for="item in filteredItems"
         :key="item.id"
-        class="bg-gray-100 border cursor-pointer rounded-xl p-4 shadow transform hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+        class="border cursor-pointer rounded-lg gap-1 p-1 shadow transform flex flex-col justify-between relative"
         tabindex="0"
         @keydown.enter="addToCart(item)"
         @click="showDetails(item)"
         role="button"
         :aria-label="`View details of ${item.name}`"
       >
-        <div>
+        <div class="relative">
+          <!-- Image -->
           <img
-            v-if="item.image"
-            :src="item.image"
+            v-if="item.image_url"
+            :src="item.image_url"
             :alt="item.name"
-            class="h-40 w-full object-cover rounded-lg mb-3"
+            class="h-40 w-full object-cover rounded mb-3"
             loading="lazy"
           />
-          <div class="font-semibold text-xl text-gray-800 mb-1">
-            {{ item.name }}
-          </div>
-          <div class="text-lg font-bold text-green-600 mb-3">
-            ${{ item.price }}
-          </div>
+
+          <!-- Floating Add-to-Cart Icon -->
+          <button
+            @click.stop="addToCart(item)"
+            class="absolute top-2 right-2 bg-gray-50 text-gray-800 p-2 rounded-full hover:bg-opacity-100 transition"
+            :aria-label="`Add ${item.name} to cart`"
+          >
+            <font-awesome-icon :icon="['fas', 'shopping-cart']" />
+          </button>
         </div>
-        <button
-          @click.stop="addToCart(item)"
-          class="w-full flex items-center justify-center gap-2 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-          :aria-label="`Add ${item.name} to cart`"
-        >
-          <font-awesome-icon :icon="['fas', 'shopping-cart']" />
-          {{ $t("addToCart") }}
-        </button>
+
+        <!-- Product info -->
+        <div>
+          <div class="text-lg text-gray-800 mb-1">{{ item.name }}</div>
+          <div class="text-lg text-gray-800 mb-3">${{ item.price }}</div>
+        </div>
       </div>
     </div>
 
@@ -99,15 +101,16 @@
     <div v-else class="text-center py-12 text-gray-400 text-lg">
       {{ $t("noItems") }}
     </div>
-    <button class="px-2 py-4 bg-red-300"   @click="showDetails(item)" ></button>
 
     <!-- Modals -->
     <CartModal
       :show="showCartModal"
       :cart="cart"
       @close="showCartModal = false"
-      @remove="removeFromCart"
-      @checkout="handleCheckout"
+      @remove="removeItem"
+      @decrease="decreaseQuantity"
+      @increase="increaseQuantity"
+      @checkout-confirm="handleCheckoutConfirm"
     />
     <ProductDetailModal
       :show="showProductModal"
@@ -124,8 +127,8 @@ import LoadingSpinner from "~/components/laoding.vue";
 import CartModal from "~/components/CartModal.vue";
 import ProductDetailModal from "~/components/ProductDetailModal.vue";
 
-const categories = ref([]);
-const allProducts = ref([]);
+const categories = useState("categories", () => []);
+const allProducts = useState("allProducts", () => []);
 const items = ref([]);
 const selectedCategory = ref(null);
 const loading = ref(false);
@@ -174,7 +177,12 @@ function selectCategory(categoryId) {
 
 // Add to cart
 function addToCart(item) {
-  cart.value.push(item);
+  let existing = cart.value.find((cartItem) => cartItem.id === item.id);
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.value.push({ ...item, quantity: 1 });
+  }
   if (process.client) {
     localStorage.setItem("cart", JSON.stringify(cart.value));
   }
@@ -186,39 +194,88 @@ function showDetails(item) {
   showProductModal.value = true;
 }
 
-// Remove from cart
-function removeFromCart(index) {
+// Remove item from cart (whole item delete)
+function removeItem(index) {
   cart.value.splice(index, 1);
   if (process.client) {
     localStorage.setItem("cart", JSON.stringify(cart.value));
   }
 }
 
-// Checkout placeholder
-function handleCheckout() {
-  alert("Checkout functionality will be implemented later");
+// Decrease quantity or remove if 1
+function decreaseQuantity(index) {
+  if (cart.value[index].quantity > 1) {
+    cart.value[index].quantity--;
+  } else {
+    cart.value.splice(index, 1);
+  }
+  if (process.client) {
+    localStorage.setItem("cart", JSON.stringify(cart.value));
+  }
 }
 
-// Fetch data on mount
+// Increase quantity
+function increaseQuantity(index) {
+  cart.value[index].quantity++;
+  if (process.client) {
+    localStorage.setItem("cart", JSON.stringify(cart.value));
+  }
+}
+async function handleCheckoutConfirm() {
+  try {
+    const totalPrice = cart.value
+      .reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0)
+      .toFixed(2);
+
+    const orderItems = cart.value.map((item) => ({
+      product_id: item.id,
+      qty: item.quantity,
+    }));
+
+    const payload = {
+      table_number: "1",
+      items: orderItems,
+      total_price: parseFloat(totalPrice),
+    };
+
+    await $api.post("/orders", payload);
+
+    cart.value = [];
+    if (process.client) {
+      localStorage.setItem("cart", JSON.stringify(cart.value));
+    }
+    showCartModal.value = false;
+    alert("Order placed successfully!");
+  } catch (error) {
+    console.error("Order submission error:", error);
+    alert("Failed to place order. Please try again.");
+  }
+}
 onMounted(async () => {
   if (process.client) {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       cart.value = JSON.parse(savedCart);
+      cart.value = cart.value.map((item) => ({
+        ...item,
+        quantity: item.quantity || 1,
+      }));
     }
   }
   loading.value = true;
   try {
     await Promise.all([
-      fetchAllProducts(),
-      (async () => {
-        const response = await $api.get("/categories");
-        categories.value = response.data.categories;
-      })(),
+      allProducts.value.length === 0 ? fetchAllProducts() : Promise.resolve(),
+      categories.value.length === 0
+        ? (async () => {
+            const response = await $api.get("/categories");
+            categories.value = response.data.categories;
+          })()
+        : Promise.resolve(),
     ]);
     if (categories.value.length > 0) {
-      selectedCategory.value = categories.value[0].id;
-      selectCategory(selectedCategory.value);
+      selectedCategory.value = "all";
+      selectCategory("all");
     }
   } catch (err) {
     console.error("API error:", err);

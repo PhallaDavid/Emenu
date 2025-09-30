@@ -13,43 +13,31 @@
         @click="$emit('close')"
         class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <font-awesome-icon :icon="['fas', 'xmark']" />
       </button>
 
       <!-- Product content -->
       <div class="flex flex-col md:flex-row gap-4">
         <img
-          v-if="product.image"
-          :src="product.image"
+          v-if="product.image_url"
+          :src="product.image_url"
           :alt="product.name"
-          class="w-full md:w-48 h-48 object-cover rounded"
+          class="w-full md:w-48 h-60 object-cover rounded"
         />
-        <div class="flex-1">
-          <h2 class="text-2xl font-bold mb-2">{{ product.name }}</h2>
-          <div class="text-green-600 font-semibold text-xl mb-4">
-            ${{ product.price }}
-          </div>
-          <p class="text-gray-700 mb-4">{{ product.description }}</p>
 
-          <button
-            @click="$emit('add-to-cart', product)"
-            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Add to Cart
-          </button>
+        <div class="flex flex-row justify-between w-full md:pl-4">
+          <div class="flex flex-col justify-start gap-1">
+            <div class="text-lg text-gray-800 mb-1">{{ product.name }}</div>
+            <div class="text-lg text-gray-800 mb-3">${{ product.price }}</div>
+          </div>
+          <div class="flex flex-row self-end justify-end">
+            <button
+              @click="$emit('add-to-cart', product)"
+              class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800"
+            >
+              <font-awesome-icon :icon="['fas', 'shopping-cart']" />Add to Cart
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -2,10 +2,18 @@
   "menu": "Menu",
   "search": "Search for coffee, drinks...",
   "all": "All",
+  "All": "All",
   "addToCart": "Add to Cart",
   "yourCart": "Your Cart",
   "cartEmpty": "Your cart is empty.",
   "total": "Total:",
   "checkout": "Checkout",
-  "noItems": "No items available in this category."
+  "noItems": "No items available in this category.",
+  "Payment": "Payment",
+  "Cash": "Cash",
+  "Delivery": "Delivery",
+  "Enter your payment details here...": "Enter your payment details here...",
+  "Order Now": "Order Now",
+  "Pay Now": "Pay Now",
+  "Select your payment method": "Select your payment method"
 }
