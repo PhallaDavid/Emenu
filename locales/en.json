@@ -1,0 +1,11 @@
+{
+  "menu": "Menu",
+  "search": "Search for coffee, drinks...",
+  "all": "All",
+  "addToCart": "Add to Cart",
+  "yourCart": "Your Cart",
+  "cartEmpty": "Your cart is empty.",
+  "total": "Total:",
+  "checkout": "Checkout",
+  "noItems": "No items available in this category."
+}
