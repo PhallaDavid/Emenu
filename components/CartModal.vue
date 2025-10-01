@@ -18,7 +18,7 @@
         <div v-if="cart.length === 0" class="text-center py-8 text-gray-500">
           {{ $t("cartEmpty") }}
           <img
-            src="/static/images/empty-cart.png"
+            src="/images/empty-cart.png"
             class="w-24 h-24 flex items-center mx-auto"
             alt=""
           />

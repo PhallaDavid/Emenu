@@ -2,7 +2,7 @@
 
   export default defineNuxtPlugin((nuxtApp) => {
     const api = axios.create({
-      baseURL: "http://localhost:8000/api",
+      baseURL: "http://54.196.237.240/api",
     });
     nuxtApp.provide("api", api);
   });

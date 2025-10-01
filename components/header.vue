@@ -8,7 +8,7 @@
           class="text-2xl font-bold text-gray-800 transition-colors"
         >
           <img
-            src="/static/images/kh1.png"
+            src="/images/kh1.png"
             class="rounded-full w-12 h-12"
             alt=""
           />
