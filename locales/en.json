@@ -15,5 +15,6 @@
   "Enter your payment details here...": "Enter your payment details here...",
   "Order Now": "Order Now",
   "Pay Now": "Pay Now",
-  "Select your payment method": "Select your payment method"
+  "Select your payment method": "Select your payment method",
+  "Processing...": "Processing..."
 }

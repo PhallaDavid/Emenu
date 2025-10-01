@@ -8,7 +8,7 @@
       <input
         v-model="searchQuery"
         type="text"
-        :placeholder="$t('search...')"
+        :placeholder="$t('search')"
         class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         :aria-label="$t('search')"
       />
@@ -162,13 +162,15 @@ import ProductDetailModal from "~/components/ProductDetailModal.vue";
 import Spin from "~/components/spin.vue";
 import TableSelectModal from "~/components/TableSelectModal.vue";
 
+const route = useRoute();
+
 const categories = useState("categories", () => []);
 const allProducts = useState("allProducts", () => []);
 const items = ref([]);
 const selectedCategory = ref(null);
 const loading = ref(false);
 const searchQuery = ref("");
-const showTableModal = ref(true);
+const showTableModal = ref(false);
 const tableNumber = ref("");
 
 // reactive loading states for cart buttons
@@ -314,6 +316,15 @@ async function handleCheckoutConfirm() {
 }
 
 onMounted(async () => {
+  // Check for table query parameter
+  const table = route.query.table;
+  if (table) {
+    tableNumber.value = table;
+    console.log("Table from URL:", tableNumber.value);
+  } else {
+    showTableModal.value = true;
+  }
+
   if (process.client) {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
