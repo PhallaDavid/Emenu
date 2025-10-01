@@ -7,11 +7,12 @@
           to="/"
           class="text-2xl font-bold text-gray-800 transition-colors"
         >
-          <img
-            src="/images/kh1.png"
-            class="rounded-full w-12 h-12"
-            alt=""
-          />
+            <!-- <img
+              src="/images/kh1.png"
+              class="rounded-full w-12 h-12"
+              alt=""
+            /> -->
+            K&H Coffee
         </NuxtLink>
         <!-- Desktop Actions -->
         <div class="flex items-center space-x-2">
