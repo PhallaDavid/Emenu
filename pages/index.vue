@@ -24,11 +24,14 @@
     </div>
 
     <!-- Category Tabs -->
-    <div class="flex overflow-x-auto space-x-3 p-4 mb-6 pb-2" role="tablist">
+    <div
+      class="flex overflow-x-auto space-x-3 p-4 mb-6 pb-2 scrollbar-hide"
+      role="tablist"
+    >
       <button
         @click="selectCategory('all')"
         :class="[
-          'px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
+          'flex-shrink-0 px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
           selectedCategory === 'all'
             ? 'bg-gray-800 text-white shadow'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
@@ -38,12 +41,13 @@
       >
         {{ $t("all") }}
       </button>
+
       <button
         v-for="category in categories"
         :key="category.id"
         @click="selectCategory(category.id)"
         :class="[
-          'px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
+          'flex-shrink-0 px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
           selectedCategory === category.id
             ? 'bg-gray-800 text-white shadow'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
@@ -348,6 +352,7 @@ onMounted(async () => {
 .flex::-webkit-scrollbar {
   display: none;
 }
+
 .flex {
   -ms-overflow-style: none;
   scrollbar-width: none;

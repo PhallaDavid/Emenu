@@ -15,6 +15,7 @@
 
       <!-- Cart View -->
       <div v-if="!isPayment">
+        <!-- Empty Cart -->
         <div v-if="cart.length === 0" class="text-center py-8 text-gray-500">
           {{ $t("cartEmpty") }}
           <img
@@ -24,6 +25,7 @@
           />
         </div>
 
+        <!-- Cart Items -->
         <div v-else class="space-y-4 max-h-64 overflow-y-auto">
           <div
             v-for="(item, index) in cart"
@@ -77,11 +79,37 @@
           </div>
           <div class="flex justify-end pt-2">
             <button
-              @click="checkout"
+              @click="handleCheckout"
               class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold border-2 border-gray-800 hover:bg-gray-200 transition-colors flex items-center gap-2"
+              :disabled="loading"
             >
-              <font-awesome-icon :icon="['fas', 'credit-card']" />
-              {{ $t("checkout") }}
+              <span v-if="!loading" class="flex items-center gap-2">
+                <font-awesome-icon :icon="['fas', 'credit-card']" />
+                {{ $t("checkout") }}
+              </span>
+              <span v-else class="flex items-center gap-2">
+                <svg
+                  class="animate-spin h-5 w-5 text-gray-800"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                {{ $t("Processing...") }}
+              </span>
             </button>
           </div>
         </div>
@@ -115,14 +143,40 @@
 
         <div class="flex justify-end pt-2">
           <button
-            @click="confirmPayment"
+            @click="handleOrder"
             class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold border-2 border-gray-800 hover:bg-gray-200 transition-colors flex items-center gap-2"
+            :disabled="loading"
           >
-            <font-awesome-icon
-              :icon="['fas', 'receipt']"
-              class="w-6 h-6 text-gray-700"
-            />
-            {{ $t("Order Now") }}
+            <span v-if="!loading" class="flex items-center gap-2">
+              <font-awesome-icon
+                :icon="['fas', 'receipt']"
+                class="w-6 h-6 text-gray-700"
+              />
+              {{ $t("Order Now") }}
+            </span>
+            <span v-else class="flex items-center gap-2">
+              <svg
+                class="animate-spin h-5 w-5 text-gray-800"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+              {{ $t("Processing...") }}
+            </span>
           </button>
         </div>
       </div>
@@ -157,6 +211,7 @@ export default {
     return {
       isPayment: false,
       paymentMethod: "cash",
+      loading: false, // new
     };
   },
   computed: {
@@ -177,11 +232,21 @@ export default {
     },
   },
   methods: {
-    checkout() {
-      this.isPayment = true;
+    handleCheckout() {
+      this.loading = true;
+      setTimeout(() => {
+        this.isPayment = true;
+        this.loading = false;
+      }, 1000);
     },
-    confirmPayment() {
-      this.$emit("checkout-confirm");
+    handleOrder() {
+      if (!this.paymentMethod) return;
+
+      this.loading = true;
+      setTimeout(() => {
+        this.$emit("checkout-confirm", this.paymentMethod);
+        this.loading = false;
+      }, 1500);
     },
   },
 };
