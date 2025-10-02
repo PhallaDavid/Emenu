@@ -8,7 +8,7 @@
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h2>
                 <button @click="isSidebarOpen = !isSidebarOpen"
-                    class="p-2 text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    class="p-2 text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200  focus:outline-none focus:ring-2 focus:ring-gray-300">
                     <font-awesome-icon class="w-5 h-5" :icon="['fas', 'bars']" />
                 </button>
             </div>
