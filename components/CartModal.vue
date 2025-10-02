@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     @click="$emit('close')">
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative" @click.stop>
+    <div class="bg-white rounded-3xl   p-6 max-w-md w-full mx-4 relative" @click.stop>
       <!-- Header -->
       <h2 class="text-2xl font-bold mb-4">
         {{ isPayment ? $t("Payment") : $t("yourCart") }}
@@ -16,13 +16,13 @@
         </div>
 
         <!-- Cart Items -->
-        <div v-else class="space-y-4 max-h-92 overflow-y-auto">
+        <div v-else class="space-y-4 max-h-96 overflow-y-auto">
           <div v-for="(item, index) in cart" :key="index" class="flex items-center space-x-4 border-b pb-4">
             <img :src="item.image_url || '/images/coffee.jpg'" :alt="item.name"
-              class="h-16 w-16 object-cover rounded" />
+              class="h-16 w-16 object-cover rounded-lg" />
             <div class="flex-1">
-              <div class="text-lg text-gray-800 mb-1">{{ item.name }}</div>
-              <div class="text-lg text-gray-800 mb-3">${{ item.price }}</div>
+              <div class="text-xs text-gray-800 mb-1">{{ item.name }}</div>
+              <div class="text-xs text-gray-800 mb-3">${{ item.price }}</div>
             </div>
 
             <!-- Quantity Controls -->
@@ -31,7 +31,7 @@
                 class="bg-gray-200 text-gray-800 px-2 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed">
                 <font-awesome-icon :icon="['fas', 'minus']" />
               </button>
-              <span class="font-semibold px-2">{{ item.quantity }}</span>
+              <span class="font-semibold text-xs px-2">{{ item.quantity }}</span>
               <button @click="$emit('increase', index)" class="bg-gray-200 text-gray-800 px-2 py-1 rounded">
                 <font-awesome-icon :icon="['fas', 'plus']" />
               </button>
@@ -44,6 +44,7 @@
             </button>
           </div>
         </div>
+
 
         <!-- Total & Checkout -->
         <div v-if="cart.length > 0" class="mt-4 pt-4 border-t">
@@ -167,10 +168,11 @@ export default {
     },
     handleOrder() {
       if (!this.paymentMethod) return;
-
       this.loading = true;
       setTimeout(() => {
         this.$emit("checkout-confirm", this.paymentMethod);
+        this.isPayment = false;
+        this.paymentMethod = "cash";
         this.loading = false;
       }, 1500);
     },

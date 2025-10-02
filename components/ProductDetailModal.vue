@@ -1,22 +1,23 @@
 <template>
   <div v-if="show" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     @click="$emit('close')">
-    <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4 relative" @click.stop>
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 relative" @click.stop>
       <!-- Close button -->
-      <button @click="$emit('close')" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+      <button @click="$emit('close')"
+        class="absolute top-2  hover:bg-gray-100 rounded-full p-2 right-2 text-gray-500 hover:text-gray-700">
         <font-awesome-icon :icon="['fas', 'xmark']" />
       </button>
 
       <!-- Product content -->
       <div class="flex flex-col md:flex-row gap-4">
         <img :src="product.image_url || '/images/coffee.jpg'" :alt="product.name"
-          class="w-full md:w-48 h-60 object-cover rounded" />
+          class="w-full md:w-48 h-60 object-cover rounded-3xl" />
 
         <div class="flex flex-col justify-between w-full md:pl-4">
           <div>
             <div class=" flex flex-row justify-between ">
-              <div class="text-lg text-gray-800 mb-1">{{ product.name }}</div>
-              <div class="text-lg text-gray-800 mb-3">${{ product.price }}</div>
+              <div class="text-lg font-semibold text-gray-800 mb-1">{{ product.name }}</div>
+              <div class="text-lg font-semibold text-gray-800 mb-3">${{ product.price }}</div>
 
             </div>
             <div class="text-gray-600 mb-4">{{ product.description }}</div>

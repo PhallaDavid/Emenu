@@ -7,7 +7,7 @@
       class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 relative"
       @click.stop
     >
-      <h2 class="text-xl font-bold mb-4">Select Your Table</h2>
+      <h2 class="text-xl font-bold mb-4">Table</h2>
 
       <input
         v-model="tableNumber"

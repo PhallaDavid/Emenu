@@ -4,9 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
-      title: "Emenu",
+      title: "K&H Coffee",
       link: [
-        { rel: "icon", type: "/images/kh1.PNG", href: "/favicon.png" },
+        { rel: "icon", type: "/images/kh1.PNG", href: "/images/kh1.PNG" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",

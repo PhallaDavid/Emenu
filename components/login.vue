@@ -53,13 +53,13 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter, useNuxtApp } from '#imports'
+import { useRouter, useNuxtApp, useCookie } from '#imports'
 
 const props = defineProps({ show: Boolean })
 const emit = defineEmits(['close'])
 const nuxtApp = useNuxtApp()
 const $api = nuxtApp.$api
-const router = useRouter() // <-- router composable
+const router = useRouter()
 
 const email = ref('')
 const password = ref('')
@@ -75,14 +75,12 @@ async function handleLogin() {
       email: email.value,
       password: password.value,
     })
+    const tokenCookie = useCookie('access_token')
+    tokenCookie.value = response.data.access_token
+    const user = useState('user', () => null)
+    user.value = response.data.user
 
-    // Save access token
-    localStorage.setItem('access_token', response.data.access_token)
-
-    // Redirect to dashboard
     await router.push('/dashboard')
-
-    // Close modal
     emit('close')
   } catch (error) {
     errorMessage.value =
@@ -92,6 +90,7 @@ async function handleLogin() {
   }
 }
 </script>
+
 
 
 <style scoped>

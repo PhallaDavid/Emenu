@@ -8,7 +8,7 @@
       <slot />
     </main>
     <!-- Footer -->
-    <Footer />
+    <Footer class="pb-0" />
   </div>
 </template>
 
@@ -16,3 +16,9 @@
 import Footer from "~/components/footer.vue"; // use PascalCase file name
 import Header from "~/components/header.vue"; // use PascalCase file name
 </script>
+<style scoped>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+</style>
