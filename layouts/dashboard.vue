@@ -18,8 +18,28 @@
         </button>
       </header>
 
-      <!-- Main content (slot for pages) -->
-      <main class="p-4">
+      <!-- Persistent Header (desktop & mobile) -->
+      <header
+        class="hidden sm:flex items-center justify-end p-4 bg-white shadow-md border-b"
+      >
+        <!-- <div class="text-xl font-semibold text-gray-800">Dashboard</div> -->
+        <div class="flex items-center space-x-4">
+          <!-- <button
+            class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+          >
+            Notifications
+          </button> -->
+          <div class="flex items-center space-x-2">
+            <img
+              src="/images/kh1.PNG"
+              alt="Profile"
+              class="w-8 h-8 rounded-full"
+            />
+            <span class="text-gray-700">{{ user.name || "Guest" }}</span>
+          </div>
+        </div>
+      </header>
+      <main class="p-4 flex-1 bg-gray-50">
         <slot />
       </main>
     </div>
@@ -27,9 +47,21 @@
 </template>
 
 <script setup>
-import { ref, provide } from "vue";
+import { ref, provide, onMounted } from "vue";
 import Sidebar from "~/components/Sidebar.vue";
 
+const user = ref({}); // default empty object
 const isSidebarOpen = ref(false);
 provide("isSidebarOpen", isSidebarOpen);
+
+onMounted(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    try {
+      user.value = JSON.parse(storedUser);
+    } catch (err) {
+      console.error("Failed to parse user from localStorage:", err);
+    }
+  }
+});
 </script>

@@ -7,13 +7,22 @@
             ID
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Image
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
             Name
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
-            Email
+            SKU
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
-            Role
+            Price
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Stock
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Category
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
             Status
@@ -24,34 +33,46 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
-          <td class="px-4 py-2 text-sm text-gray-700">{{ user.id }}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">{{ user.name }}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">{{ user.email }}</td>
+        <tr
+          v-for="product in products"
+          :key="product.id"
+          class="hover:bg-gray-50"
+        >
+          <td class="px-4 py-2 text-sm text-gray-700">{{ product.id }}</td>
+          <td class="px-4 py-2">
+            <img
+              :src="product.image_url"
+              alt="product image"
+              class="w-12 h-12 object-cover rounded"
+            />
+          </td>
+          <td class="px-4 py-2 text-sm text-gray-700">{{ product.name }}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">{{ product.sku }}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${{ product.price }}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">{{ product.stock }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">
-            {{ user.role || "User" }}
+            {{ product.category?.name || "N/A" }}
           </td>
           <td class="px-4 py-2">
             <span
               :class="[
                 'px-2 py-1 rounded-full text-xs font-semibold',
-                statusColor(user.status),
+                statusColor(product.is_active),
               ]"
             >
-              {{ user.status || "active" }}
+              {{ product.is_active ? "Active" : "Inactive" }}
             </span>
           </td>
           <td class="px-4 py-2 text-sm text-gray-700 space-x-2">
             <NuxtLink
-              :to="`/users/edit/${user.id}`"
+              :to="`/products/edit/${product.id}`"
               class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
             >
               Edit
             </NuxtLink>
-
             <button
               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
-              @click="deleteUser(user)"
+              @click="deleteProduct(product)"
             >
               Delete
             </button>
@@ -73,7 +94,7 @@
       <button
         v-for="page in lastPage"
         :key="page"
-        @click="fetchUsers(page)"
+        @click="fetchProducts(page)"
         :class="[
           'px-3 py-1 rounded',
           page === currentPage
@@ -98,51 +119,42 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-const users = ref([]);
+const products = ref([]);
 const currentPage = ref(1);
 const lastPage = ref(1);
 const perPage = 15;
 const { $api } = useNuxtApp();
-
-const statusColor = (status) => {
-  switch ((status || "").toLowerCase()) {
-    case "active":
-      return "bg-green-100 text-green-800";
-    case "inactive":
-      return "bg-red-100 text-red-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-const fetchUsers = async (page = 1) => {
+const statusColor = (isActive) =>
+  isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
+const fetchProducts = async (page = 1) => {
   try {
-    const res = await $api.get(`/users?page=${page}&row_per_page=${perPage}`);
-    users.value = res.data.data || [];
-
+    const res = await $api.get(
+      `/products?page=${page}&row_per_page=${perPage}`
+    );
+    products.value = res.data.data || [];
     currentPage.value = res.data.current_page || 1;
     lastPage.value = res.data.last_page || 1;
   } catch (err) {
     console.error("API error:", err);
-    users.value = [];
+    products.value = [];
   }
 };
 
 const nextPage = () => {
   if (currentPage.value < lastPage.value) {
     currentPage.value++;
-    fetchUsers(currentPage.value);
+    fetchProducts(currentPage.value);
   }
 };
+
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
-    fetchUsers(currentPage.value);
+    fetchProducts(currentPage.value);
   }
 };
-const editUser = (user) => alert(`Edit user #${user.id}`);
-const deleteUser = (user) => alert(`Delete user #${user.id}`);
 
-onMounted(() => {
-  fetchUsers(currentPage.value);
-});
+const deleteProduct = (product) => alert(`Delete product #${product.id}`);
+
+onMounted(() => fetchProducts(currentPage.value));
 </script>

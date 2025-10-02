@@ -158,7 +158,7 @@ const fetchOrders = async () => {
 
 onMounted(() => {
   fetchOrders();
-  setInterval(fetchOrders, 5000); // poll every 5 seconds
+  setInterval(fetchOrders, 10000); // poll every 5 seconds
 });
 </script>
 

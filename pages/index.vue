@@ -57,7 +57,6 @@
           <img :src="item.image_url || '/images/coffee.jpg'" :alt="item.name || 'Default coffee image'"
             class="h-40 w-full object-cover rounded-xl mb-3" loading="lazy" />
 
-
           <!-- Floating Add-to-Cart -->
           <button @click.stop="handleAddToCart(item)"
             class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center rounded-full bg-white/40 backdrop-blur-sm ring-1 ring-white/30 text-gray-800 p-2 hover:bg-white/60 transition"
@@ -90,6 +89,25 @@
     <!-- No Items -->
     <div v-else class="text-center py-12 text-gray-400 text-lg">
       {{ $t("noItems") }}
+    </div>
+
+    <!-- Pagination -->
+    <div v-if="totalPages > 1" class="flex justify-center mt-6">
+      <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+        class="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
+        :aria-label="$t('previousPage')">
+        {{ $t("previous") }}
+      </button>
+
+      <span class="mx-4 text-lg font-semibold" aria-live="polite">
+        {{ $t("page") }} {{ currentPage }} {{ $t("of") }} {{ totalPages }}
+      </span>
+
+      <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+        class="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
+        :aria-label="$t('nextPage')">
+        {{ $t("next") }}
+      </button>
     </div>
 
     <!-- Modals -->
@@ -134,34 +152,57 @@ const showCartModal = useState("showCartModal", () => false);
 
 // Nuxt API
 const { $api } = useNuxtApp();
+const currentPage = ref(1);
+const row_per_page = 12;
+const totalPages = ref(0);
 
 // Filtered items for search
 const filteredItems = computed(() => {
-  if (!searchQuery.value) return items.value;
-  return items.value.filter((item) =>
+  const itemsList = items.value || [];
+  if (!searchQuery.value) return itemsList;
+  return itemsList.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
-// Fetch all products
-async function fetchAllProducts() {
-  try {
-    const response = await $api.get("/products");
-    allProducts.value = response.data.products;
-  } catch (err) {
-    console.error("API error:", err);
+// Function to set items based on category and page
+function setItems() {
+  let categoryList;
+  if (selectedCategory.value === "all") {
+    categoryList = allProducts.value || [];
+  } else {
+    categoryList = (allProducts.value || []).filter(
+      (item) => item.category_id === selectedCategory.value
+    );
   }
+  const totalFiltered = categoryList.length;
+  totalPages.value = Math.ceil(totalFiltered / row_per_page);
+  const start = (currentPage.value - 1) * row_per_page;
+  const end = start + row_per_page;
+  items.value = categoryList.slice(start, end);
 }
 
-// Select category
+// Fetch all products once
+async function fetchAllProducts() {
+  try {
+    const response = await $api.get(
+      `/products/?page=1&row_per_page=1000` // Fetch all at once
+    );
+    allProducts.value = response.data?.data || [];
+  } catch (err) {
+    console.error("API error:", err);
+    allProducts.value = [];
+  }
+}
 function selectCategory(categoryId) {
   selectedCategory.value = categoryId;
-  if (categoryId === "all") {
-    items.value = allProducts.value;
-  } else {
-    items.value = allProducts.value.filter(
-      (item) => item.category_id === categoryId
-    );
+  currentPage.value = 1;
+  setItems();
+}
+function goToPage(pageNum) {
+  if (pageNum >= 1 && pageNum <= totalPages.value) {
+    currentPage.value = pageNum;
+    setItems();
   }
 }
 function handleTableConfirm(number) {
@@ -286,16 +327,18 @@ onMounted(async () => {
   loading.value = true;
   try {
     await Promise.all([
-      allProducts.value.length === 0 ? fetchAllProducts() : Promise.resolve(),
-      categories.value.length === 0
+      !allProducts.value || allProducts.value.length === 0
+        ? fetchAllProducts()
+        : Promise.resolve(),
+      !categories.value || categories.value.length === 0
         ? (async () => {
           const response = await $api.get("/categories");
-          categories.value = response.data.categories;
+          categories.value = response.data?.categories || [];
         })()
         : Promise.resolve(),
     ]);
 
-    if (categories.value.length > 0) {
+    if (categories.value && categories.value.length > 0) {
       selectedCategory.value = "all";
       selectCategory("all");
     }
