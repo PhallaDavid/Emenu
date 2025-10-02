@@ -5,13 +5,9 @@
 
     <!-- Search Bar -->
     <div class="mb-6 gap-4">
-      <input
-        v-model="searchQuery"
-        type="text"
-        :placeholder="$t('search')"
+      <input v-model="searchQuery" type="text" :placeholder="$t('search')"
         class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
-        :aria-label="$t('search')"
-      />
+        :aria-label="$t('search')" />
       <!-- <button
         class="px-4 py-2 bg-gray-100 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800"
       >
@@ -24,89 +20,54 @@
     </div>
 
     <!-- Category Tabs -->
-    <div
-      class="flex overflow-x-auto space-x-3 p-4 mb-6 pb-2 scrollbar-hide"
-      role="tablist"
-    >
-      <button
-        @click="selectCategory('all')"
-        :class="[
-          'flex-shrink-0 px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
-          selectedCategory === 'all'
-            ? 'bg-gray-800 text-white shadow'
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
-        ]"
-        role="tab"
-        :aria-selected="selectedCategory === 'all'"
-      >
+    <div class="flex overflow-x-auto space-x-3 p-4 mb-6 pb-2 scrollbar-hide" role="tablist">
+      <button @click="selectCategory('all')" :class="[
+        'flex-shrink-0 px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
+        selectedCategory === 'all'
+          ? 'bg-gray-800 text-white shadow'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
+      ]" role="tab" :aria-selected="selectedCategory === 'all'">
         {{ $t("all") }}
       </button>
 
-      <button
-        v-for="category in categories"
-        :key="category.id"
-        @click="selectCategory(category.id)"
-        :class="[
-          'flex-shrink-0 px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
-          selectedCategory === category.id
-            ? 'bg-gray-800 text-white shadow'
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
-        ]"
-        role="tab"
-        :aria-selected="selectedCategory === category.id"
-      >
+      <button v-for="category in categories" :key="category.id" @click="selectCategory(category.id)" :class="[
+        'flex-shrink-0 px-4 py-2 rounded-full font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800',
+        selectedCategory === category.id
+          ? 'bg-gray-800 text-white shadow'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-800 hover:text-gray-100',
+      ]" role="tab" :aria-selected="selectedCategory === category.id">
         {{ category.name }}
       </button>
     </div>
 
     <!-- Loading -->
-    <div
-      v-if="loading"
-      class="flex justify-center self-center py-12 text-gray-500 text-lg"
-    >
+    <div v-if="loading" class="flex justify-center self-center py-12 text-gray-500 text-lg">
       <LoadingSpinner />
     </div>
 
     <!-- Menu Items -->
-    <div
-      v-else-if="filteredItems.length > 0"
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4"
-    >
-      <div
-        v-for="item in filteredItems"
-        :key="item.id"
-        class="border cursor-pointer gap-1 rounded-xl shadow transform flex flex-col justify-between relative"
-        tabindex="0"
-        @keydown.enter="addToCart(item)"
-        @click="showDetails(item)"
-        role="button"
-        :aria-label="`View details of ${item.name}`"
-      >
+    <div v-else-if="filteredItems.length > 0"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div v-for="item in filteredItems" :key="item.id"
+        class="border cursor-pointer gap-1 border-2 border-gray-100 rounded-xl shadow transform flex flex-col justify-between relative"
+        tabindex="0" @keydown.enter="addToCart(item)" @click="showDetails(item)" role="button"
+        :aria-label="`View details of ${item.name}`">
         <div class="relative">
           <!-- Image -->
-          <img
-            v-if="item.image_url"
-            :src="item.image_url"
-            :alt="item.name"
-            class="h-40 w-full object-cover rounded-xl mb-3"
-            loading="lazy"
-          />
+          <img :src="item.image_url || '/images/coffee.jpg'" :alt="item.name || 'Default coffee image'"
+            class="h-40 w-full object-cover rounded-xl mb-3" loading="lazy" />
+
 
           <!-- Floating Add-to-Cart -->
-          <button
-            @click.stop="handleAddToCart(item)"
+          <button @click.stop="handleAddToCart(item)"
             class="absolute top-2 right-2 w-10 h-10 flex items-center justify-center rounded-full bg-white/40 backdrop-blur-sm ring-1 ring-white/30 text-gray-800 p-2 hover:bg-white/60 transition"
-            :aria-label="`Add ${item.name} to cart`"
-          >
+            :aria-label="`Add ${item.name} to cart`">
             <div class="flex items-center justify-center w-full h-full">
               <span v-if="loadingItems.includes(item.id)">
                 <Spin class="w-4 h-4" />
               </span>
               <span v-else>
-                <font-awesome-icon
-                  :icon="['fas', 'shopping-cart']"
-                  class="text-sm text-gray-100"
-                />
+                <font-awesome-icon :icon="['fas', 'shopping-cart']" class="text-sm text-gray-800" />
               </span>
             </div>
           </button>
@@ -114,9 +75,7 @@
 
         <!-- Product info -->
         <div>
-          <div
-            class="flex flex-row justify-between p-2 lg:flex-row md:flex-col sm:flex-col"
-          >
+          <div class="flex flex-row justify-between p-2 lg:flex-row md:flex-col sm:flex-col">
             <div class="lg:text-lg text-gray-800 mb-1 sm:text-xs md:text-xs">
               {{ item.name }}
             </div>
@@ -134,21 +93,10 @@
     </div>
 
     <!-- Modals -->
-    <CartModal
-      :show="showCartModal"
-      :cart="cart"
-      @close="showCartModal = false"
-      @remove="removeItem"
-      @decrease="decreaseQuantity"
-      @increase="increaseQuantity"
-      @checkout-confirm="handleCheckoutConfirm"
-    />
-    <ProductDetailModal
-      :show="showProductModal"
-      :product="selectedProduct"
-      @close="showProductModal = false"
-      @add-to-cart="addToCart"
-    />
+    <CartModal :show="showCartModal" :cart="cart" @close="showCartModal = false" @remove="removeItem"
+      @decrease="decreaseQuantity" @increase="increaseQuantity" @checkout-confirm="handleCheckoutConfirm" />
+    <ProductDetailModal :show="showProductModal" :product="selectedProduct" @close="showProductModal = false"
+      @add-to-cart="addToCart" />
     <!-- Table Modal -->
     <TableSelectModal :show="showTableModal" @confirm="handleTableConfirm" />
   </div>
@@ -341,9 +289,9 @@ onMounted(async () => {
       allProducts.value.length === 0 ? fetchAllProducts() : Promise.resolve(),
       categories.value.length === 0
         ? (async () => {
-            const response = await $api.get("/categories");
-            categories.value = response.data.categories;
-          })()
+          const response = await $api.get("/categories");
+          categories.value = response.data.categories;
+        })()
         : Promise.resolve(),
     ]);
 

@@ -4,7 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
+      title: "Emenu",
       link: [
+        { rel: "icon", type: "/images/kh1.PNG", href: "/favicon.png" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
@@ -15,6 +17,10 @@ export default defineNuxtConfig({
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
         },
+      ],
+      meta: [
+        { name: "description", content: "Emenu for customers scan online menu and order easily" },
+        { name: "theme-color", content: "#ffffff" },
       ],
     },
   },
