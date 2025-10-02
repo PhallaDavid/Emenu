@@ -75,6 +75,7 @@ async function handleLogin() {
       email: email.value,
       password: password.value,
     })
+    localStorage.setItem('token', response.data.access_token)
     const tokenCookie = useCookie('access_token')
     tokenCookie.value = response.data.access_token
     const user = useState('user', () => null)
