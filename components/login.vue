@@ -50,7 +50,6 @@
         </div>
     </transition>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useNuxtApp, useCookie } from '#imports'
@@ -67,33 +66,32 @@ const loading = ref(false)
 const errorMessage = ref('')
 
 async function handleLogin() {
-  loading.value = true
-  errorMessage.value = ''
+    loading.value = true
+    errorMessage.value = ''
 
-  try {
-    const response = await $api.post('/login', {
-      email: email.value,
-      password: password.value,
-    })
-    localStorage.setItem('token', response.data.access_token)
-    const tokenCookie = useCookie('access_token')
-    tokenCookie.value = response.data.access_token
-    const user = useState('user', () => null)
-    user.value = response.data.user
+    try {
+        const response = await $api.post('/login', {
+            email: email.value,
+            password: password.value,
+        })
+        localStorage.setItem('token', response.data.access_token)
+        const tokenCookie = useCookie('access_token')
+        tokenCookie.value = response.data.access_token
+        const user = useState('user', () => null)
+        user.value = response.data.user
+        localStorage.setItem('user', JSON.stringify(response.data.user))
 
-    await router.push('/dashboard')
-    emit('close')
-  } catch (error) {
-    errorMessage.value =
-      error.response?.data?.message || 'Login failed. Please try again.'
-  } finally {
-    loading.value = false
-  }
+        await router.push('/dashboard')
+        emit('close')
+    } catch (error) {
+        errorMessage.value =
+            error.response?.data?.message || 'Login failed. Please try again.'
+    } finally {
+        loading.value = false
+    }
 }
+
 </script>
-
-
-
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {

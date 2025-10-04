@@ -64,12 +64,12 @@
             >
               Print
             </button>
-            <NuxtLink
+            <!-- <NuxtLink
               class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-xs"
               @click="editOrder(order)"
             >
               Edit
-            </NuxtLink>
+            </NuxtLink> -->
             <button
               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
               @click="deleteOrder(order)"

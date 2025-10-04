@@ -79,13 +79,9 @@
             <font-awesome-icon :icon="['fas', 'xmark']" size="lg" />
           </button>
           <div class="flex flex-col gap-2">
-            <button v-if="!isAuthenticated" @click="openLogin"
+            <button @click="openLogin"
               class="w-full bg-blue-600 text-white px-4 py-3 rounded-full font-semibold text-center hover:bg-blue-700 transition-colors">
               Login
-            </button>
-            <button v-if="isAuthenticated" @click="logout"
-              class="w-full bg-gray-200 text-gray-800 px-4 py-3 rounded-full font-semibold text-center hover:bg-gray-300 transition-colors">
-              Logout
             </button>
           </div>
         </div>
@@ -101,7 +97,7 @@ import LoginModal from "~/components/login.vue";
 const { $api } = useNuxtApp();
 const cart = useState("cart", () => []);
 const showCartModal = useState("showCartModal", () => false);
-const noti = useState("noti", () => []); // holds new orders
+const noti = useState("noti", () => []);
 const dropdownOpen = ref(false);
 
 const sidebarOpen = ref(false);
@@ -112,39 +108,26 @@ const isAuthenticated = computed(() => !!user.value);
 
 const toggleDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value;
-  if (dropdownOpen.value) noti.value = []; // clear notifications when opened
+  if (dropdownOpen.value) noti.value = [];
 };
 
 const openLogin = () => {
   showLoginModal.value = true;
   sidebarOpen.value = false;
 };
-
-const logout = () => {
-  user.value = null;
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("token");
-  localStorage.removeItem("email");
-  localStorage.removeItem("user");
-  sidebarOpen.value = false;
-  router.push("/");
-};
-
-// --- Fetch orders from GET API and show notifications ---
 const orders = ref([]);
 
 const fetchOrders = async () => {
   try {
-    // Use your provided $api instance
-    const response = await $api.get("/orders"); // <-- calls https://54.196.237.240/api/orders
-    const latestOrders = response.data; // Axios wraps response in `data`
+    const response = await $api.get("/orders");
+    const latestOrders = response.data;
 
     if (orders.value.length > 0) {
       const newOrders = latestOrders.filter(
         o => !orders.value.find(existing => existing.id === o.id)
       );
       if (newOrders.length > 0) {
-        noti.value.push(...newOrders); // push new orders to notifications
+        noti.value.push(...newOrders);
       }
     }
 
@@ -158,7 +141,7 @@ const fetchOrders = async () => {
 
 onMounted(() => {
   fetchOrders();
-  setInterval(fetchOrders, 10000); // poll every 5 seconds
+  setInterval(fetchOrders, 90000);
 });
 </script>
 

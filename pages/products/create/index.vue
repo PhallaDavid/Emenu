@@ -4,7 +4,7 @@
 
     <NuxtLink to="/products/list" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 
              font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 
-             dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+             ">
       Back
     </NuxtLink>
 
@@ -13,67 +13,67 @@
       <!-- Name + Slug -->
       <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
         <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Name</label>
           <input v-model="product.name" type="text" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required />
+                   focus:border-blue-500 " required />
         </div>
         <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Slug</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Slug</label>
           <input v-model="product.slug" type="text" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required />
+                   focus:border-blue-500 " required />
         </div>
       </div>
 
       <!-- SKU + Description -->
       <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
         <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sku</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Sku</label>
           <input v-model="product.sku" type="text" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required />
+                   focus:border-blue-500 " required />
         </div>
         <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Description</label>
           <textarea v-model="product.description" rows="3" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+                   focus:border-blue-500 "></textarea>
         </div>
       </div>
 
       <!-- Image + Price -->
       <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
         <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product Image</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Product Image</label>
           <input type="file" @change="handleFileChange" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer 
-                   bg-gray-50 dark:text-gray-400 dark:bg-gray-700 dark:border-gray-600" />
+                   bg-gray-50 " />
           <div v-if="previewImage" class="mt-2">
             <img :src="previewImage" class="w-20 h-20 rounded-lg object-cover" />
           </div>
         </div>
         <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Price</label>
           <input v-model.number="product.price" type="number" step="0.01" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                   focus:border-blue-500 " />
         </div>
       </div>
 
       <!-- Stock + Active -->
       <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
         <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Stock</label>
           <input v-model.number="product.stock" type="number" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                   focus:border-blue-500 " />
         </div>
         <div class="flex items-center mt-4 md:mt-0">
           <input type="checkbox" v-model="product.is_active" class="mr-2" />
-          <label class="text-sm text-gray-700 dark:text-white">Active</label>
+          <label class="text-sm text-gray-700 ">Active</label>
         </div>
       </div>
 
       <!-- Category + Subcategory -->
       <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
         <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Category</label>
           <select v-model="product.category_id" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                   focus:border-blue-500 ">
             <option value="" disabled>Select Category</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">
               {{ cat.name }}
@@ -81,9 +81,9 @@
           </select>
         </div>
         <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subcategory</label>
+          <label class="block mb-2 text-sm font-medium text-gray-900 ">Subcategory</label>
           <select v-model="product.subcategory_id" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                   focus:border-blue-500 ">
             <option value="" disabled>Select Subcategory</option>
             <option v-for="sub in filteredSubcategories" :key="sub.id" :value="sub.id">
               {{ sub.name }}
@@ -95,7 +95,7 @@
       <!-- Submit -->
       <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none 
                focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center 
-               dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+               ">
         Create Product
       </button>
     </form>
