@@ -25,6 +25,9 @@
             Category
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Sub Category
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
             Status
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
@@ -33,18 +36,10 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr
-          v-for="product in products"
-          :key="product.id"
-          class="hover:bg-gray-50"
-        >
+        <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50">
           <td class="px-4 py-2 text-sm text-gray-700">{{ product.id }}</td>
           <td class="px-4 py-2">
-            <img
-              :src="product.image_url"
-              alt="product image"
-              class="w-12 h-12 object-cover rounded"
-            />
+            <img :src="product.image_url" alt="product image" class="w-12 h-12 object-cover rounded" />
           </td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ product.name }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ product.sku }}</td>
@@ -53,27 +48,25 @@
           <td class="px-4 py-2 text-sm text-gray-700">
             {{ product.category?.name || "N/A" }}
           </td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ product.subcategory_id
+              || "N/A" }}
+          </td>
           <td class="px-4 py-2">
-            <span
-              :class="[
-                'px-2 py-1 rounded-full text-xs font-semibold',
-                statusColor(product.is_active),
-              ]"
-            >
+            <span :class="[
+              'px-2 py-1 rounded-full text-xs font-semibold',
+              statusColor(product.is_active),
+            ]">
               {{ product.is_active ? "Active" : "Inactive" }}
             </span>
           </td>
           <td class="px-4 py-2 text-sm text-gray-700 space-x-2">
-            <NuxtLink
-              :to="`/products/edit/${product.id}`"
-              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
-            >
+            <NuxtLink :to="`/products/edit/${product.id}`"
+              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs">
               Edit
             </NuxtLink>
-            <button
-              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
-              @click="deleteProduct(product)"
-            >
+            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
+              @click="deleteProduct(product)">
               Delete
             </button>
           </td>
@@ -83,33 +76,20 @@
 
     <!-- Pagination -->
     <div class="mt-4 flex justify-center items-center space-x-2">
-      <button
-        @click="prevPage"
-        :disabled="currentPage === 1"
-        class="px-3 py-1 bg-gray-200 rounded"
-      >
+      <button @click="prevPage" :disabled="currentPage === 1" class="px-3 py-1 bg-gray-200 rounded">
         Prev
       </button>
 
-      <button
-        v-for="page in lastPage"
-        :key="page"
-        @click="fetchProducts(page)"
-        :class="[
-          'px-3 py-1 rounded',
-          page === currentPage
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-        ]"
-      >
+      <button v-for="page in lastPage" :key="page" @click="fetchProducts(page)" :class="[
+        'px-3 py-1 rounded',
+        page === currentPage
+          ? 'bg-blue-500 text-white'
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+      ]">
         {{ page }}
       </button>
 
-      <button
-        @click="nextPage"
-        :disabled="currentPage === lastPage"
-        class="px-3 py-1 bg-gray-200 rounded"
-      >
+      <button @click="nextPage" :disabled="currentPage === lastPage" class="px-3 py-1 bg-gray-200 rounded">
         Next
       </button>
     </div>

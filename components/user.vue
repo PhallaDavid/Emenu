@@ -43,7 +43,7 @@
           </td>
           <td class="px-4 py-2 text-sm text-gray-700 space-x-2">
             <NuxtLink
-              :to="`/users/edit/${user.id}`"
+              :to="`/settings/users/edit/${user.id}`"
               class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
             >
               Edit
