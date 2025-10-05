@@ -36,10 +36,18 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50">
+        <tr
+          v-for="product in products"
+          :key="product.id"
+          class="hover:bg-gray-50"
+        >
           <td class="px-4 py-2 text-sm text-gray-700">{{ product.id }}</td>
           <td class="px-4 py-2">
-            <img :src="product.image_url" alt="product image" class="w-12 h-12 object-cover rounded" />
+            <img
+              :src="product.image_url"
+              alt="product image"
+              class="w-12 h-12 object-cover rounded"
+            />
           </td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ product.name }}</td>
           <td class="px-4 py-2 text-sm text-gray-700">{{ product.sku }}</td>
@@ -49,25 +57,30 @@
             {{ product.category?.name || "N/A" }}
           </td>
           <td class="px-4 py-2 text-sm text-gray-700">
-            {{ product.subcategory_id
-              || "N/A" }}
+            {{ product.subcategory_id || "N/A" }}
           </td>
           <td class="px-4 py-2">
-            <span :class="[
-              'px-2 py-1 rounded-full text-xs font-semibold',
-              statusColor(product.is_active),
-            ]">
+            <span
+              :class="[
+                'px-2 py-1 rounded-full text-xs font-semibold',
+                statusColor(product.is_active),
+              ]"
+            >
               {{ product.is_active ? "Active" : "Inactive" }}
             </span>
           </td>
           <td class="px-4 py-2 text-sm text-gray-700 space-x-2">
-            <NuxtLink :to="`/products/edit/${product.id}`"
-              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs">
-              Edit
+            <NuxtLink
+              :to="`/products/edit/${product.id}`"
+              class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
+            >
+              <font-awesome-icon :icon="['fas', 'pen-to-square']" />
             </NuxtLink>
-            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
-              @click="deleteProduct(product)">
-              Delete
+            <button
+              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
+              @click="deleteProduct(product)"
+            >
+              <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
           </td>
         </tr>
@@ -76,21 +89,34 @@
 
     <!-- Pagination -->
     <div class="mt-4 flex justify-center items-center space-x-2">
-      <button @click="prevPage" :disabled="currentPage === 1" class="px-3 py-1 bg-gray-200 rounded">
-        Prev
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="px-3 py-1 bg-gray-200 rounded"
+      >
+        <font-awesome-icon :icon="['fas', 'chevron-left']" />
       </button>
 
-      <button v-for="page in lastPage" :key="page" @click="fetchProducts(page)" :class="[
-        'px-3 py-1 rounded',
-        page === currentPage
-          ? 'bg-blue-500 text-white'
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-      ]">
+      <button
+        v-for="page in lastPage"
+        :key="page"
+        @click="fetchProducts(page)"
+        :class="[
+          'px-3 py-1 rounded',
+          page === currentPage
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+        ]"
+      >
         {{ page }}
       </button>
 
-      <button @click="nextPage" :disabled="currentPage === lastPage" class="px-3 py-1 bg-gray-200 rounded">
-        Next
+      <button
+        @click="nextPage"
+        :disabled="currentPage === lastPage"
+        class="px-3 py-1 bg-gray-200 rounded"
+      >
+        <font-awesome-icon :icon="['fas', 'chevron-right']" />
       </button>
     </div>
   </div>
@@ -104,8 +130,11 @@ const currentPage = ref(1);
 const lastPage = ref(1);
 const perPage = 15;
 const { $api } = useNuxtApp();
+
 const statusColor = (isActive) =>
   isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
+
+// Fetch products with pagination
 const fetchProducts = async (page = 1) => {
   try {
     const res = await $api.get(
@@ -120,6 +149,21 @@ const fetchProducts = async (page = 1) => {
   }
 };
 
+// Delete product function
+const deleteProduct = async (product) => {
+  if (!confirm(`Are you sure you want to delete "${product.name}"?`)) return;
+
+  try {
+    await $api.delete(`/products/${product.id}`);
+    alert("Product deleted successfully!");
+    fetchProducts(currentPage.value); // refresh list
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete product.");
+  }
+};
+
+// Pagination controls
 const nextPage = () => {
   if (currentPage.value < lastPage.value) {
     currentPage.value++;
@@ -133,8 +177,6 @@ const prevPage = () => {
     fetchProducts(currentPage.value);
   }
 };
-
-const deleteProduct = (product) => alert(`Delete product #${product.id}`);
 
 onMounted(() => fetchProducts(currentPage.value));
 </script>

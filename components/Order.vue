@@ -62,7 +62,7 @@
               class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
               @click="printOrder(order)"
             >
-              Print
+              <font-awesome-icon :icon="['fas', 'print']"  />
             </button>
             <!-- <NuxtLink
               class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-xs"
@@ -74,7 +74,7 @@
               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
               @click="deleteOrder(order)"
             >
-              Delete
+              <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
           </td>
         </tr>
@@ -87,7 +87,7 @@
         :disabled="currentPage === 1"
         class="px-3 py-1 bg-gray-200 rounded"
       >
-        Prev
+        <font-awesome-icon :icon="['fas', 'chevron-left']" />
       </button>
 
       <button
@@ -109,7 +109,7 @@
         :disabled="currentPage === lastPage"
         class="px-3 py-1 bg-gray-200 rounded"
       >
-        Next
+         <font-awesome-icon :icon="['fas', 'chevron-right']" />
       </button>
     </div>
   </div>

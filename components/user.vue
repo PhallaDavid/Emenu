@@ -46,14 +46,14 @@
               :to="`/settings/users/edit/${user.id}`"
               class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
             >
-              Edit
+              <font-awesome-icon :icon="['fas', 'pen-to-square']" />
             </NuxtLink>
 
             <button
               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
               @click="deleteUser(user)"
             >
-              Delete
+              <font-awesome-icon :icon="['fas', 'trash']" />
             </button>
           </td>
         </tr>
@@ -67,10 +67,10 @@
         :disabled="currentPage === 1"
         class="px-3 py-1 bg-gray-200 rounded"
       >
-        Prev
+        <font-awesome-icon :icon="['fas', 'chevron-left']" />
       </button>
 
-      <button
+      <button 
         v-for="page in lastPage"
         :key="page"
         @click="fetchUsers(page)"
@@ -89,7 +89,7 @@
         :disabled="currentPage === lastPage"
         class="px-3 py-1 bg-gray-200 rounded"
       >
-        Next
+        <font-awesome-icon :icon="['fas', 'chevron-right']" />
       </button>
     </div>
   </div>

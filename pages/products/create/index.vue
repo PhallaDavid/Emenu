@@ -1,91 +1,163 @@
 <template>
-  <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Create Product</h1>
+  <div class="w-full mx-auto p-4">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Create Product</h1>
+      <NuxtLink
+        to="/products/list"
+        class="inline-flex items-center gap-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200"
+      >
+        <i class="ri-arrow-left-line"></i> Back
+      </NuxtLink>
+    </div>
 
-    <NuxtLink to="/products/list" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 
-             font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 
-             ">
-      Back
-    </NuxtLink>
-
-    <form @submit.prevent="createProduct" class="space-y-6 bg-white p-6 rounded shadow-md"
-      enctype="multipart/form-data">
+    <form
+      @submit.prevent="createProduct"
+      class="rounded space-y-6"
+      enctype="multipart/form-data"
+    >
       <!-- Name + Slug -->
-      <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
-        <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Name</label>
-          <input v-model="product.name" type="text" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 " required />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Name</label
+          >
+          <input
+            v-model="product.name"
+            placeholder="Enter Product Name"
+            type="text"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+            required
+          />
         </div>
-        <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Slug</label>
-          <input v-model="product.slug" type="text" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 " required />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Slug</label
+          >
+          <input
+            v-model="product.slug"
+            placeholder="Enter Product Slug"
+            type="text"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+            required
+          />
         </div>
       </div>
 
       <!-- SKU + Description -->
-      <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
-        <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Sku</label>
-          <input v-model="product.sku" type="text" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 " required />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >SKU</label
+          >
+          <input
+            placeholder="Enter Product SKU"
+            v-model="product.sku"
+            type="text"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+            required
+          />
         </div>
-        <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Description</label>
-          <textarea v-model="product.description" rows="3" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 "></textarea>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Description</label
+          >
+          <textarea
+            placeholder="Enter Product Description"
+            v-model="product.description"
+            rows="3"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+          ></textarea>
         </div>
       </div>
 
       <!-- Image + Price -->
-      <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
-        <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Product Image</label>
-          <input type="file" @change="handleFileChange" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer 
-                   bg-gray-50 " />
-          <div v-if="previewImage" class="mt-2">
-            <img :src="previewImage" class="w-20 h-20 rounded-lg object-cover" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Product Image</label
+          >
+          <input
+            type="file"
+            @change="handleFileChange"
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+          <div v-if="previewImage" class="mt-3">
+            <img
+              :src="previewImage"
+              class="w-24 h-24 rounded-lg object-cover shadow-sm"
+            />
           </div>
         </div>
-        <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Price</label>
-          <input v-model.number="product.price" type="number" step="0.01" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 " />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Price</label
+          >
+          <input
+            placeholder="Enter Product Price"
+            v-model.number="product.price"
+            type="number"
+            step="0.01"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
         </div>
       </div>
 
       <!-- Stock + Active -->
-      <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
-        <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Stock</label>
-          <input v-model.number="product.stock" type="number" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 " />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Stock</label
+          >
+          <input
+            placeholder="Enter Product Stock"
+            v-model.number="product.stock"
+            type="number"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
         </div>
-        <div class="flex items-center mt-4 md:mt-0">
-          <input type="checkbox" v-model="product.is_active" class="mr-2" />
-          <label class="text-sm text-gray-700 ">Active</label>
+        <div class="flex items-center mt-6 md:mt-8">
+          <input
+            type="checkbox"
+            v-model="product.is_active"
+            id="is_active"
+            class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label for="is_active" class="ml-2 text-sm text-gray-700"
+            >Active</label
+          >
         </div>
       </div>
 
       <!-- Category + Subcategory -->
-      <div class="flex flex-col sm:flex-col md:flex-row md:space-x-6">
-        <div class="flex-1">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Category</label>
-          <select v-model="product.category_id" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 ">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Category</label
+          >
+          <select
+            v-model="product.category_id"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
             <option value="" disabled>Select Category</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">
               {{ cat.name }}
             </option>
           </select>
         </div>
-        <div class="flex-1 mt-4 md:mt-0">
-          <label class="block mb-2 text-sm font-medium text-gray-900 ">Subcategory</label>
-          <select v-model="product.subcategory_id" class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-blue-500 
-                   focus:border-blue-500 ">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Subcategory</label
+          >
+          <select
+            v-model="product.subcategory_id"
+            class="w-full p-2.5 rounded-lg border border-gray-300 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
             <option value="" disabled>Select Subcategory</option>
-            <option v-for="sub in filteredSubcategories" :key="sub.id" :value="sub.id">
+            <option
+              v-for="sub in filteredSubcategories"
+              :key="sub.id"
+              :value="sub.id"
+            >
               {{ sub.name }}
             </option>
           </select>
@@ -93,15 +165,18 @@
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none 
-               focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center 
-               ">
-        Create Product
-      </button>
+      <div class="pt-4 border-t border-gray-100">
+        <button
+          type="submit"
+          class="bg-blue-700 hover:bg-blue-800 text-white font-medium px-5 py-2.5 rounded-lg text-sm inline-flex items-center transition-all duration-200"
+        >
+          <i class="ri-save-3-line mr-2"></i>
+          Create
+        </button>
+      </div>
     </form>
   </div>
 </template>
-
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
@@ -133,12 +208,13 @@ const subcategories = ref([]);
 const file = ref(null);
 const previewImage = ref("");
 
-const filteredSubcategories = computed(() => {
-  if (!product.value.category_id) return [];
-  return subcategories.value.filter(
-    (sub) => sub.parent_id === product.value.category_id
-  );
-});
+const filteredSubcategories = computed(() =>
+  product.value.category_id
+    ? subcategories.value.filter(
+        (sub) => sub.parent_id === product.value.category_id
+      )
+    : []
+);
 
 const fetchCategories = async () => {
   try {
@@ -166,29 +242,20 @@ const handleFileChange = (e) => {
 const createProduct = async () => {
   try {
     const formData = new FormData();
-    formData.append("name", product.value.name);
-    formData.append("slug", product.value.slug);
-    formData.append("sku", product.value.sku);
-    formData.append("description", product.value.description);
-    formData.append("price", product.value.price);
-    formData.append("stock", product.value.stock);
-    formData.append("is_active", product.value.is_active ? 1 : 0);
-    formData.append("category_id", product.value.category_id);
-    formData.append("subcategory_id", product.value.subcategory_id);
-
-    if (file.value) {
-      formData.append("image", file.value);
-    }
+    Object.entries(product.value).forEach(([key, value]) =>
+      formData.append(key, value)
+    );
+    if (file.value) formData.append("image", file.value);
 
     await $api.post("/products", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    alert("Product created successfully!");
+    alert("✅ Product created successfully!");
     router.push("/products/list");
   } catch (err) {
     console.error(err);
-    alert("Failed to create product.");
+    alert("❌ Failed to create product.");
   }
 };
 
